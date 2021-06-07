@@ -90,7 +90,7 @@ async function viewRoles() {
 
 async function viewEmployees() {
 
-    let query = 'SELECT * FROM employee LEFT JOIN manager ON employee.manager_id = manager.manager_id;'
+    let query = 'select * from employee LEFT JOIN manager ON manager.manager_id = employee.manager_id;'
 
     db.query(query, async function (err, res) {
         if (err) throw err;
