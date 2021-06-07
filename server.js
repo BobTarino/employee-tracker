@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const roleQuery = 'SELECT * from role; SELECT CONCAT (e.first_name," ",e.last_name) AS full_name FROM employee e';
 
-const optionsPrompt= () => {
+const optionsPrompt = () => {
     return inquirer
         .prompt(
             {
@@ -12,207 +12,199 @@ const optionsPrompt= () => {
                 message: 'Select an option?',
                 choices: [
 
-                'View all departments', 
-                'View all roles',
-                'View all employees',
-                'Add department',
-                'Add role',
-                'Add employee',
-                'Update employee',
-                'Exit']
+                    'View All Departments',
+                    'View All Job Roles',
+                    'View All Employees',
+                    'Add A Department',
+                    'Add A Job Role',
+                    'Add Employee',
+                    'Update Employee Info',
+                    'Exit']
             },
         )
-    
-            .then(function({options}) {
-                switch(options) {
 
-                    case 'View all departments':
+        .then(function ({ options }) {
+            switch (options) {
+
+                case 'View All Departments':
                     viewDepartments()
                     break;
 
-                    case 'View all roles':
+                case 'View All Job Roles':
                     viewRoles()
                     break;
 
-                    case 'View all employees':
+                case 'View All Employees':
                     viewEmployees()
                     break;
 
-                    case 'Add department':
+                case 'Add A Department':
                     addDepartment()
                     break;
-                    
-                    
-                    case 'Add role':
+
+
+                case 'Add A Job Role':
                     addRole()
                     break;
 
-                    case 'Add employee':
+                case 'Add Employee':
                     addEmployee();
                     break;
 
-                    case 'Update employee':
+                case 'Update Employee Info':
                     updateEmployee();
                     break;
 
-                    case 'Exit':
+                case 'Exit':
                     exit();
                     break;
-                }
-            })
-            .catch();
+            }
+        })
+        .catch();
 }
 function viewDepartments() {
-    
-    var query = 'SELECT * FROM department'
+
+    let query = 'SELECT * FROM department'
 
     db.query(query, function (err, res) {
-    if (err) throw err;
+        if (err) throw err;
 
-    console.table(res);
-    console.log("Department viewed!");  
-    optionsPrompt();
+        console.table(res);
+        console.log("Departments!");
+        optionsPrompt();
 
-})
+    })
 };
 
 function viewRoles() {
-    
-    var query = 'SELECT * FROM role'
+
+    let query = 'SELECT * FROM role'
 
     db.query(query, function (err, res) {
-    if (err) throw err;
+        if (err) throw err;
 
-    console.table(res);
-    console.log("Roles viewed!");  
-    optionsPrompt();
+        console.table(res);
+        console.log("Roles!");
+        optionsPrompt();
 
-})
+    })
 };
 
 function viewEmployees() {
-    
-    var query = 'SELECT * FROM employee'
+
+    let query = 'SELECT * FROM employee'
 
     db.query(query, function (err, res) {
-    if (err) throw err;
+        if (err) throw err;
 
-    console.table(res);
-    console.log("Roles viewed!");  
-    optionsPrompt();
-})
+        console.table(res);
+        console.log("Employees!");
+        optionsPrompt();
+    })
 };
 
 function addDepartment() {
 
 
     return inquirer
-    .prompt([
-        {
-            type: 'input',
-            name: "addDepartment",
-            message: "What is the name of the department you want to add?"
-        }
-    ])
-    .then((answer) => {
-        let sql = 'INSERT INTO department (name) VALUES (?)';
-        
-            db.query(sql, answer.addDepartment, (err, res) => {
-            if (err) throw err;
-            console.log('');
+        .prompt([
+            {
+                type: 'input',
+                name: "addDepartment",
+                message: "What is the name of the department you want to add?"
+            }
+        ])
+        .then((answer) => {
+            let sql = 'INSERT INTO department (name) VALUES (?)';
 
-            optionsPrompt()
-    });
-    });
+            db.query(sql, answer.addDepartment, (err, res) => {
+                if (err) throw err;
+                console.log('');
+
+                optionsPrompt()
+            });
+        });
 };
 
 
-function addRole() { 
-    db.query("SELECT role.title AS title, role.salary AS salary FROM role",   function(err, res) {
-      inquirer.prompt([
-          {
-            type: 'input',
-            name: 'title',
-            message: "What is the title of the new role?"
-          },
-          {
-            type: 'input',
-            name: 'salary',
-            message: "What is the salary of the new role?"
-          } 
-      ]).then(function(res) {
-          db.query(
-              "INSERT INTO role SET ?",
-              {
-                title: res.title,
-                salary: res.salary,
-                department_id: 1,
-              },
-              function(err) {
-                  if (err) throw err
-                  console.table(res);
-                  optionsPrompt();
-              }
-          )
-  
-      });
-    });
-    }   
-
-    
-function addEmployee() {
-    
+function addRole() {
+    db.query("SELECT role.title AS title, role.salary AS salary FROM role", function (err, res) {
         inquirer.prompt([
             {
                 type: 'input',
-                name: 'firstname',
-                message: "What is the first name of the employee you want to add?"
+                name: 'title',
+                message: "What is the title of the new role?"
             },
             {
                 type: 'input',
-                name: 'lastname',
-                message: "What is the last name of the employee you want to add?"
-            },
-            {
-                type: 'input',
-                name: 'roleid',
-                message: 'Please enter the role id of the employee you want to add'
-            },
-            {
-                type: 'input',
-                name: 'managername',
-                message: 'Please enter the manager name of the employee you want to add'
-            } 
-        ]).then(function(res) {
+                name: 'salary',
+                message: "What is the salary of the new role?"
+            }
+        ]).then(function (res) {
             db.query(
-                "INSERT INTO employee SET ?",
+                "INSERT INTO role SET ?",
                 {
-                  first_name: res.firstname,
-                  last_name: res.lastname,
-                  role_id: res.role,
-                  manager_id: res.managername
-            
+                    title: res.title,
+                    salary: res.salary,
+                    department_id: 1,
                 },
-                function(err) {
+                function (err) {
                     if (err) throw err
                     console.table(res);
                     optionsPrompt();
                 }
             )
-    
+
         });
+    });
+}
+
+
+function addEmployee() {
+
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'firstname',
+            message: "What is the first name of the employee you want to add?"
+        },
+        {
+            type: 'input',
+            name: 'lastname',
+            message: "What is the last name of the employee you want to add?"
+        },
+        {
+            type: 'input',
+            name: 'roleid',
+            message: 'Please enter the role id of the employee you want to add'
+        },
+        {
+            type: 'input',
+            name: 'managername',
+            message: 'Please enter the manager name of the employee you want to add'
+        }
+    ]).then(function (res) {
+        db.query(
+            "INSERT INTO employee SET ?",
+            {
+                first_name: res.firstname,
+                last_name: res.lastname,
+                role_id: res.role,
+                manager_id: res.managername
+
+            },
+            function (err) {
+                if (err) throw err
+                console.table(res);
+                optionsPrompt();
+            }
+        )
+
+    });
 };
-
-
-          
-
-      
 
 
 optionsPrompt();
 
 
-
-
-// Connect to database // variable db holds connection
 
