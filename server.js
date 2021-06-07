@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('./db/connection');
 const inquirer = require('inquirer');
 
 const PORT = process.env.PORT || 3001;
@@ -21,8 +21,18 @@ const db = mysql.createConnection({
     database: 'election'
 });
 
+// API ROUTES
 
+// Default response for any other request (Not Found) // CATCHALL // make sure this is last route
+app.use((req, res) => {
+    res.status(404).end();
+});
 
-app.listen(PORT, () => {
+// Start server after DB connection
+db.connect(err => {
+  if (err) throw err;
+  console.log('Database connected.');
+  app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+});
