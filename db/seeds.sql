@@ -1,3 +1,16 @@
+INSERT INTO manager (name)
+VALUES
+    ('Debbie Chase'),
+    ('Lorenzo Diaz'),
+    ('Amy Warner');
+    ('Florence Mayweather'),
+    ('Connor Mason'),
+    ('Gugu Mbatha-Raw'),
+    ('Henry Fischer'),
+    ('Carrot Top');
+
+
+
 INSERT INTO department (name)
 VALUES
     ('Design'),

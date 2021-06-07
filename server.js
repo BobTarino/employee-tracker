@@ -1,7 +1,6 @@
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-// const roleQuery = 'SELECT * from role; SELECT CONCAT (e.first_name," ",e.last_name) AS full_name FROM employee e';
 
 const optionsPrompt = () => {
     return inquirer
@@ -62,6 +61,7 @@ const optionsPrompt = () => {
         })
         .catch();
 }
+
 async function viewDepartments() {
 
     let query = 'SELECT * FROM department'
@@ -116,8 +116,7 @@ async function addDepartment() {
 
             db.query(sql, answer.addDepartment, (err, res) => {
                 if (err) throw err;
-                console.log('');
-
+                console.table(res);
                 optionsPrompt()
             });
         });
@@ -178,15 +177,15 @@ async function addEmployee() {
         {
             type: 'input',
             name: 'managername',
-            message: 'Please enter the manager name of the employee you want to add'
+            message: 'Please enter the manager id (#1-8) for the manager of the employee you want to add:'
         }
     ]).then(async function (res) {
         db.query(
-            "INSERT INTO employee SET ?",
+            "INSERT INTO employee SET ? ",
             {
                 first_name: res.firstname,
                 last_name: res.lastname,
-                role_id: res.role,
+                role_id: res.roleid,
                 manager_id: res.managername
 
             },
