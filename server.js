@@ -1,7 +1,7 @@
 const db = require('./db/connection');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const roleQuery = 'SELECT * from role; SELECT CONCAT (e.first_name," ",e.last_name) AS full_name FROM employee e';
+// const roleQuery = 'SELECT * from role; SELECT CONCAT (e.first_name," ",e.last_name) AS full_name FROM employee e';
 
 const optionsPrompt = () => {
     return inquirer
@@ -23,7 +23,7 @@ const optionsPrompt = () => {
             },
         )
 
-        .then(function ({ options }) {
+        .then(async function ({ options }) {
             switch (options) {
 
                 case 'View All Departments':
@@ -62,7 +62,7 @@ const optionsPrompt = () => {
         })
         .catch();
 }
-function viewDepartments() {
+async function viewDepartments() {
 
     let query = 'SELECT * FROM department'
 
@@ -76,7 +76,7 @@ function viewDepartments() {
     })
 };
 
-function viewRoles() {
+async function viewRoles() {
 
     let query = 'SELECT * FROM role'
 
@@ -90,7 +90,7 @@ function viewRoles() {
     })
 };
 
-function viewEmployees() {
+async function viewEmployees() {
 
     let query = 'SELECT * FROM employee'
 
@@ -103,7 +103,7 @@ function viewEmployees() {
     })
 };
 
-function addDepartment() {
+async function addDepartment() {
 
 
     return inquirer
@@ -127,7 +127,7 @@ function addDepartment() {
 };
 
 
-function addRole() {
+async function addRole() {
     db.query("SELECT role.title AS title, role.salary AS salary FROM role", function (err, res) {
         inquirer.prompt([
             {
@@ -160,7 +160,7 @@ function addRole() {
 }
 
 
-function addEmployee() {
+async function addEmployee() {
 
     inquirer.prompt([
         {
