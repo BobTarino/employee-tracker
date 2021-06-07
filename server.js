@@ -66,11 +66,10 @@ async function viewDepartments() {
 
     let query = 'SELECT * FROM department'
 
-    db.query(query, function (err, res) {
+    db.query(query, async function (err, res) {
         if (err) throw err;
 
         console.table(res);
-        console.log("Departments!");
         optionsPrompt();
 
     })
@@ -80,11 +79,10 @@ async function viewRoles() {
 
     let query = 'SELECT * FROM role'
 
-    db.query(query, function (err, res) {
+    db.query(query, async function (err, res) {
         if (err) throw err;
 
         console.table(res);
-        console.log("Roles!");
         optionsPrompt();
 
     })
@@ -94,11 +92,10 @@ async function viewEmployees() {
 
     let query = 'SELECT * FROM employee'
 
-    db.query(query, function (err, res) {
+    db.query(query, async function (err, res) {
         if (err) throw err;
 
         console.table(res);
-        console.log("Employees!");
         optionsPrompt();
     })
 };
@@ -128,7 +125,7 @@ async function addDepartment() {
 
 
 async function addRole() {
-    db.query("SELECT role.title AS title, role.salary AS salary FROM role", function (err, res) {
+    db.query("SELECT role.title AS title, role.salary AS salary FROM role", async function (err, res) {
         inquirer.prompt([
             {
                 type: 'input',
@@ -140,7 +137,7 @@ async function addRole() {
                 name: 'salary',
                 message: "What is the salary of the new role?"
             }
-        ]).then(function (res) {
+        ]).then(async function (res) {
             db.query(
                 "INSERT INTO role SET ?",
                 {
@@ -148,7 +145,7 @@ async function addRole() {
                     salary: res.salary,
                     department_id: 1,
                 },
-                function (err) {
+                async function (err) {
                     if (err) throw err
                     console.table(res);
                     optionsPrompt();
@@ -183,7 +180,7 @@ async function addEmployee() {
             name: 'managername',
             message: 'Please enter the manager name of the employee you want to add'
         }
-    ]).then(function (res) {
+    ]).then(async function (res) {
         db.query(
             "INSERT INTO employee SET ?",
             {
@@ -193,7 +190,7 @@ async function addEmployee() {
                 manager_id: res.managername
 
             },
-            function (err) {
+            async function (err) {
                 if (err) throw err
                 console.table(res);
                 optionsPrompt();
