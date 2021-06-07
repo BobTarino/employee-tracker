@@ -1,17 +1,17 @@
-DROP TABLE IF EXISTS manager;
+-- DROP TABLE IF EXISTS manager;
 DROP TABLE IF EXISTS department;
 DROP TABLE IF EXISTS role; 
 DROP TABLE IF EXISTS employee;
 
 
 CREATE TABLE manager (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+    managerid INT AUTO_INCREMENT PRIMARY KEY,
+    manager_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE department (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+    department_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE role (
@@ -30,4 +30,5 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role(id),
     manager_id INT,
     FOREIGN KEY (manager_id) REFERENCES manager(id)
+    -- CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );

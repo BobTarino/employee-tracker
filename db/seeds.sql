@@ -1,4 +1,4 @@
-INSERT INTO manager (name)
+INSERT INTO manager (manager_name)
 VALUES
     ('Debbie Chase'),
     ('Lorenzo Diaz'),
@@ -20,7 +20,8 @@ VALUES
     ('Marketing'),
     ('Distribution'),
     ('Legal'),
-    ('Management');
+    ('Management'),
+    ('Test');
 
 
  INSERT INTO role (title, salary, department_id)

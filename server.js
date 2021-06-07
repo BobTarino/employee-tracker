@@ -64,7 +64,7 @@ const optionsPrompt = () => {
 
 async function viewDepartments() {
 
-    let query = 'SELECT * FROM department'
+    let query = 'SELECT * FROM department '
 
     db.query(query, async function (err, res) {
         if (err) throw err;
@@ -90,7 +90,7 @@ async function viewRoles() {
 
 async function viewEmployees() {
 
-    let query = 'SELECT * FROM employee'
+    let query = 'SELECT * FROM employee LEFT JOIN manager ON employee.manager_id = manager.manager_id;'
 
     db.query(query, async function (err, res) {
         if (err) throw err;
@@ -134,7 +134,7 @@ async function addRole() {
             {
                 type: 'input',
                 name: 'salary',
-                message: "What is the salary of the new role?"
+                message: "Please enter role salary:"
             }
         ]).then(async function (res) {
             db.query(
@@ -162,12 +162,12 @@ async function addEmployee() {
         {
             type: 'input',
             name: 'firstname',
-            message: "What is the first name of the employee you want to add?"
+            message: "Please enter First Name:"
         },
         {
             type: 'input',
             name: 'lastname',
-            message: "What is the last name of the employee you want to add?"
+            message: "Please enter Last Name:"
         },
         {
             type: 'input',
