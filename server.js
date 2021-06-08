@@ -201,64 +201,48 @@ async function addEmployee() {
 
 //Update Employee Function 
 async function updateEmployee() {
-    let allEmployeeList = [];
-    db.query("SELECT * FROM employee", async function (err, res) {
+    let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.id AS "role_id"
+                FROM employee, role, department WHERE department.id = role.department_id AND role.id = employee.role_id`;
+    db.query(sql, (error, response) => {
+      if (error) throw error;
+      let employeeNamesArray = [];
+      response.forEach((employee) => {employeeNamesArray.push(`${employee.id} ${employee.first_name} ${employee.last_name}`);});
 
-        for (let i = 0; i < res.length; i++) {
-            let employeeString =
-                res[i].id + " " + res[i].first_name + " " + res[i].last_name;
-            allEmployeeList.push(employeeString);
-        }
+      let sql = `SELECT role.id, role.title FROM role`;
+      db.query(sql, (error, response) => {
+        if (error) throw error;
+        let rolesArray = [];
+        response.forEach((role) => {rolesArray.push(`${role.id} ${role.title}`);});
 
-
-        return inquirer
-            .prompt([
-                {
-                    type: 'list',
-                    name: 'updateEmpRole',
-                    message: "Select Employee to Update:",
-                    choices: allEmployeeList
-                },
-                {
-                    type: 'list',
-                    name: 'updateRole',
-                    message: 'Update Employee Role:',
-                    choices: ['Manager', 'Programmer', 'Developer', 'Video Game Designer', 'Social Media Director', 'Artist' ]
-                }
-            ])
-            .then(function (res) {
-                console.log("Update Complete", res);
-                const idToUpdate = {};
-                idToUpdate.id = parseInt(res.updateEmpRole.split(" ")[0]);
-                if (res.updateRole === "Manager") {
-                    idToUpdate.role_id = 1;
-                } else if (res.updateRole === "Programmer") {
-                    idToUpdate.role_id = 2;
-                } else if (res.updateRole === "Developer") {
-                    idToUpdate.role_id = 3;
-                } else if (res.updateRole === "Video Game Designer") {
-                    idToUpdate.role_id = 4;
-                } else if (res.updateRole === "Social Media Director") {
-                    idToUpdate.role_id = 5;
-                } else if (res.updateRole === "Artist") {
-                    idToUpdate.role_id = 6;
-                    db.query(
-                        "UPDATE employee SET role_id = ? WHERE id = ?",
-                        [idToUpdate.role_id, idToUpdate.id],
-                        async function (err) {
-                            if (err) throw err
-                            console.table(res);
-                            optionsPrompt();
-                        }
-                    );
-             
-                }
-           
+        inquirer
+          .prompt([
+            {
+              name: 'chosenEmployee',
+              type: 'list',
+              message: 'Which employee has a new role?',
+              choices: employeeNamesArray
+            },
+            {
+              name: 'chosenRole',
+              type: 'list',
+              message: 'What is their new role?',
+              choices: rolesArray
+            }
+          ])
+          .then(function(answer) {
             
-            optionsPrompt();
-            })
+            const updatedId = answer.chosenEmployee.slice(0, 1);
+            const updatedRoleId = answer.chosenRole.slice(0, 1);
+
+            db.query('UPDATE employee SET role_id = ? WHERE id = ?',[updatedRoleId, updatedId],function(err, res) {
+              if (err) throw err;
+              console.table(res);
+              optionsPrompt();
+            });
+          });
+      });
     });
-}
+};
 
 
 
