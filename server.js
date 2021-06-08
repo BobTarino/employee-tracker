@@ -111,10 +111,10 @@ async function addDepartment() {
                 message: "What is the name of the department you want to add?"
             }
         ])
-        .then((answer) => {
+        .then((res) => {
             let sql = 'INSERT INTO department (name) VALUES (?)';
 
-            db.query(sql, answer.addDepartment, (err, res) => {
+            db.query(sql, res.addDepartment, (err, res) => {
                 if (err) throw err;
                 console.table(res);
                 optionsPrompt()
@@ -198,6 +198,68 @@ async function addEmployee() {
 
     });
 };
+
+//Update Employee Function 
+async function updateEmployee() {
+    let allEmployeeList = [];
+    db.query("SELECT * FROM employee", async function (err, res) {
+
+        for (let i = 0; i < res.length; i++) {
+            let employeeString =
+                res[i].id + " " + res[i].first_name + " " + res[i].last_name;
+            allEmployeeList.push(employeeString);
+        }
+
+
+        return inquirer
+            .prompt([
+                {
+                    type: 'list',
+                    name: 'updateEmpRole',
+                    message: "Select Employee to Update:",
+                    choices: allEmployeeList
+                },
+                {
+                    type: 'list',
+                    name: 'updateRole',
+                    message: 'Update Employee Role:',
+                    choices: ['Manager', 'Programmer', 'Developer', 'Video Game Designer', 'Social Media Director', 'Artist' ]
+                }
+            ])
+            .then(function (res) {
+                console.log("Update Complete", res);
+                const idToUpdate = {};
+                idToUpdate.id = parseInt(res.updateEmpRole.split(" ")[0]);
+                if (res.updateRole === "Manager") {
+                    idToUpdate.role_id = 1;
+                } else if (res.updateRole === "Programmer") {
+                    idToUpdate.role_id = 2;
+                } else if (res.updateRole === "Developer") {
+                    idToUpdate.role_id = 3;
+                } else if (res.updateRole === "Video Game Designer") {
+                    idToUpdate.role_id = 4;
+                } else if (res.updateRole === "Social Media Director") {
+                    idToUpdate.role_id = 5;
+                } else if (res.updateRole === "Artist") {
+                    idToUpdate.role_id = 6;
+                    db.query(
+                        "UPDATE employee SET role_id = ? WHERE id = ?",
+                        [idToUpdate.role_id, idToUpdate.id],
+                        async function (err) {
+                            if (err) throw err
+                            console.table(res);
+                            optionsPrompt();
+                        }
+                    );
+             
+                }
+           
+            
+            optionsPrompt();
+            })
+    });
+}
+
 
 
 optionsPrompt();
